@@ -1,0 +1,39 @@
+services:
+
+  pgsql:
+    image: postgres:16
+    restart: always
+    volumes:
+     - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_USER: "db"
+      POSTGRES_DB: "faculdade"
+    networks:
+      - db-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "dev@dev.com"
+      PGADMIN_DEFAULT_PASSWORD: "123"
+    ports:
+      - "6543:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - pgadmin-data:/var/lib/pgadmin-data
+    depends_on:
+      - pgsql
+    networks:
+      - db-network
+
+volumes:
+  db-data:
+  pgadmin-data:
+
+networks:
+  db-network:
+    name: db-network
+    external: true
